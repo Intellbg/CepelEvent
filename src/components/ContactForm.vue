@@ -1,17 +1,8 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue';
+const emit = defineEmits(['nextInfo'])
 
-interface Contact {
-    name: String;
-    email: String;
-    company: String;
-    ruc: String;
-    website?: String;
-    address: String;
-    phone: String;
-    area: String;
-}
-const info = ref<Contact>({
+const info = ref({
     name: "",
     email: "",
     company: "",
@@ -21,7 +12,7 @@ const info = ref<Contact>({
     area: "",
     phone: ""
 })
-const rawErrors = {
+const errors = ref({
     name: "",
     email: "",
     company: "",
@@ -29,71 +20,63 @@ const rawErrors = {
     address: "",
     area: "",
     phone: ""
-}
-const errors = reactive(rawErrors)
-const emit = defineEmits(['nextInfo'])
+})
 
 function validate() {
     for (let val in info.value) {
         let value = info.value[val as keyof typeof info.value]
-        if(value==''){
-            errors[val as keyof typeof errors]='Información requerida'
+        if (value == '' && val.toString() !== 'website') {
+            errors.value[val as keyof typeof errors.value] = 'Información requerida'
             continue
         }
-        errors[val as keyof typeof errors]=''
+        errors.value[val as keyof typeof errors.value] = ''
     }
-    validateRuc(info.value.ruc.toString() || "")
-    validatePhone(info.value.phone.toString() || "")
-    if (errors !== rawErrors) {
-        return
+    errors.value.ruc = validateRuc(info.value.ruc.toString() || "")
+    errors.value.phone = validatePhone(info.value.phone.toString() || "")
+    for (let val in errors.value) {
+        let value = errors.value[val as keyof typeof errors.value]
+        if (value != '') {
+            return
+        }
     }
-    emit('nextInfo')
+    emit('nextInfo', info.value)
 }
-
 function validateRuc(number: string) {
     if (!(/^\d+$/.test(number))) {
-        errors.ruc = "Campo solo debe incluir números"
-        return
+        return "Campo solo debe incluir números"
     }
     if (number.length !== 13) {
-        errors.ruc = "Longitud de ruc incorrecta"
-        return
+        return "Longitud de ruc incorrecta"
     }
     let provCode = parseInt(number.slice(0, 2))
     if (!((provCode <= 24) || provCode == 30)) {
-        errors.ruc = "Código de provincia inválido"
-        return
+        return "Código de provincia inválido"
     }
     let end = number.slice(10, 13)
     if (end !== '001') {
-        errors.ruc = "Ultimos dígitos inválidos"
-        return
+        return "Ultimos dígitos inválidos"
     }
-    errors.ruc = ""
+    return ""
 }
 function validatePhone(number: string) {
     if (!(/^\d+$/.test(number))) {
-        errors.phone = "Campo solo debe incluir números"
-        return
+        return "Campo solo debe incluir números"
     }
     if (number.length !== 10) {
-        errors.phone = "Longitud de teléfono incorrecta"
-        return
+        return "Longitud de teléfono incorrecta"
     }
-    errors.phone = ""
-    
+    return ""
 }
 </script>
 
 <template>
-    {{ info }}
     <div class="field">
         <label class="label">Nombre Contacto</label>
         <div class="control">
             <input class="input" type="text" placeholder="Luis Aguilar" v-model="info.name" required>
         </div>
         <p class="help is-danger">{{ errors.name }}</p>
-        
+
     </div>
     <div class="field">
         <label class="label">Email</label>
@@ -113,7 +96,7 @@ function validatePhone(number: string) {
         <label class="label">RUC</label>
         <div class="control">
             <input class="input" :class="{ 'is-danger': errors.ruc }" type="text" placeholder="1799999999001"
-            v-model="info.ruc" required maxlength="13">
+                v-model="info.ruc" required maxlength="13">
         </div>
         <p class="help is-danger">{{ errors.ruc }}</p>
     </div>
@@ -128,7 +111,7 @@ function validatePhone(number: string) {
         <label class="label">Teléfono</label>
         <div class="control">
             <input class="input" :class="{ 'is-danger': errors.phone }" type="text" placeholder="0999999999"
-            v-model="info.phone" required maxlength="10">
+                v-model="info.phone" required maxlength="10">
         </div>
         <p class="help is-danger">{{ errors.phone }}</p>
     </div>

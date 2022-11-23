@@ -1,57 +1,57 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-interface MonthlyConsumption {
-    energy: number;
-    diesel: number;
-    production: number;
-}
-const data = ref<MonthlyConsumption[]>(
-    [
-        { energy: 0, diesel: 0, production: 0 },
-        { energy: 0, diesel: 0, production: 0 },
-        { energy: 0, diesel: 0, production: 0 },
-        { energy: 0, diesel: 0, production: 0 },
-        { energy: 0, diesel: 0, production: 0 },
-        { energy: 0, diesel: 0, production: 0 },
-        { energy: 0, diesel: 0, production: 0 },
-        { energy: 0, diesel: 0, production: 0 },
-        { energy: 0, diesel: 0, production: 0 },
-        { energy: 0, diesel: 0, production: 0 },
-        { energy: 0, diesel: 0, production: 0 },
-        { energy: 0, diesel: 0, production: 0 },
-    ]
-)
+import { ref, watch } from 'vue';
+
 const months = [
     "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"
 ]
-const props=defineProps({
-    year: Number,
-})
-</script>
+const props = defineProps([
+    'year',
+    'info',
+])
 
+const data = ref<number[][] | string[][]>(props.info)
+
+watch(data, props.info, { deep: true })
+</script>
 <template>
     <h3 class="title is-4">{{ props.year }}</h3>
     <table class="table">
         <thead>
             <tr>
-                <th>Mes</th>
-                <th>E. Eléctrica [kW/h]</th>
-                <th>Diesel [gal]</th>
-                <th>Producción [kg]</th>
+                <th>
+                    <p>Mes</p>
+                </th>
+                <th>
+                    <p>E. Eléctrica [kW/h]</p>
+                </th>
+                <th>
+                    <p>Diesel [gal]</p>
+                </th>
+                <th>
+                    <p>Producción [kg]</p>
+                </th>
             </tr>
         </thead>
         <tr v-for="(row, index) in data">
-            <td>{{ months[index] }}</td>
-            <td v-for="col in row">
-                <div class="control"><input class="input" type="number" required></div>
+            <td>
+                <p>{{ months[index] }}</p>
+            </td>
+            <td v-for="(col, colIndex) in row">
+                <div class="control"><input class="input" v-model="data[index][colIndex]" type="number" min="0" step="0.01"
+                        required></div>
             </td>
         </tr>
+
     </table>
 </template>
 
 <style scoped>
 input {
-    width: 80%;
+    width: 100%;
+}
+
+.table {
+    width: 100%;
 }
 
 td {
@@ -60,5 +60,13 @@ td {
 
 .load_csv {
     color: red;
+}
+
+p {
+    text-align: center;
+}
+
+th {
+    text-align: center;
 }
 </style>

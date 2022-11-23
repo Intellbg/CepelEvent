@@ -1,19 +1,38 @@
 <script setup lang="ts">
 import ContactForm from './ContactForm.vue';
-import ConsumptionInput from './ConsumptionInput.vue';
+import ConsumptionForm from './ConsuptionForm.vue'
 import { ref } from 'vue';
 
-const data = ref({ item: { "contact": {}, "2021": {}, "2022": {} } })
-const stage = ref(0)
-function save() {
-    console.log()
+const data = ref({ "contact": {}, "2021": {}, "2022": {} })
+const stage = ref(getStage())
+function getStage() {
+    if (localStorage.getItem("stage")) {
+        return parseInt(localStorage.getItem("stage") || "")
+    }
+    return 0
 }
-function load_csv() {
+function getContact(info: object) {
+    data.value.contact = info
+    stage.value++
+}
+async function getData(d1: any, d2: any) {
+    data.value[2021] = d1
+    data.value[2022] = d2
+    localStorage.setItem("stage", "2")
+    console.log(data.value)
+    const resp = await fetch(
+        "https://sot1yngvm2.execute-api.us-east-1.amazonaws.com/default",
+        {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 'item': data })
+        }
+    )
+    stage.value++
+}
 
-}
-function nextInfo(){
-    console.log("gaaaaaaaa")
-}
 </script>
 
 <template>
@@ -21,16 +40,16 @@ function nextInfo(){
         <div class="form-container">
             <img src="https://cepelee.com/assets/img/logo.jpeg" alt="" class="logo">
             <h1 class="title">Eficiencia energética</h1>
-            {{ data.item }}
             <form v-on:submit.prevent>
-                <ContactForm v-if='stage == 0' />
-                <button class="load_csv" type="button" @click="load_csv()" v-if='stage == 1'> Load csv</button>
-                <ConsumptionInput :year="2021" v-if='stage == 1' />
-                <ConsumptionInput :year="2022" v-if='stage == 1' />
-                <div class="field is-grouped" v-if='stage == 1'>
-                    <button class="button is-link green" type="submit">Enviar</button>
-                </div>
+                <ContactForm @nextInfo="getContact" v-if='stage==0' />
+                <ConsumptionForm @getConsumptionData="getData" v-if='stage == 1' />
             </form>
+            <div class="" v-if='stage == 2'>
+                <h2>Gracias por su información</h2>
+                En el siguiente link podra encontrar recursos del evento:<a
+                    href="https://epnecuador-my.sharepoint.com/:f:/g/personal/roberto_burbano_epn_edu_ec/EktsvS9TzRJLtv6YSLbClbQBSR0l5PzNnYDjvhnZoA0x8A?e=mg2yir">Drive</a>
+                <h3>No se olvide de visitar nuestra <a href="https://cepelee.com/">página web</a> </h3>
+            </div>
         </div>
     </div>
 </template>
