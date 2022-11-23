@@ -16,20 +16,20 @@ function getContact(info: object) {
     stage.value++
 }
 async function getData(d1: any, d2: any) {
-    data.value[2021] = d1
-    data.value[2022] = d2
-    localStorage.setItem("stage", "2")
-    console.log(data.value)
+    console.log("FAAAAAAAAA")
+    console.log(JSON.stringify({ 'item': { "data": { "2021": d1, "2022": d2 }, ...data.value.contact, } }))
+    console.log("GAAAAAAAAA")
     const resp = await fetch(
-        "https://sot1yngvm2.execute-api.us-east-1.amazonaws.com/default",
+        "https://sot1yngvm2.execute-api.us-east-1.amazonaws.com/default/CepelEvent",
         {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ 'item': data })
+            body: JSON.stringify({ 'item': { "data": { "2021": d1, "2022": d2 }, ...data.value.contact, } })
         }
     )
+    localStorage.setItem("stage", "2")
     stage.value++
 }
 
