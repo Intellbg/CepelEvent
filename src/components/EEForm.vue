@@ -9,7 +9,7 @@ function getStage() {
     if (localStorage.getItem("stage")) {
         return parseInt(localStorage.getItem("stage") || "")
     }
-    return 1
+    return 0
 }
 function getContact(info: object) {
     data.value.contact = info
