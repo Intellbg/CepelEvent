@@ -55,7 +55,7 @@ function validate() {
     let error: string[]=[]
     data2021.value.forEach((row, index) => {
         row.forEach((col, index2) => {
-            if (col == "") {
+            if (col === "") {
                 error.push(`missing ${index} ${index2}`) 
             }
         })
