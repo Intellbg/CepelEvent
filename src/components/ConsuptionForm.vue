@@ -81,7 +81,7 @@ function validate() {
             Cargar CSV
         </label>
         <input type="file" @change="loadCsv($event)" accept=".csv" id="file-upload">
-        <a href="@/assets/produccion.csv" download>
+        <a href="./public/produccion.csv" download>
             <label class="button load_csv is-pulled-right ">
                 Descargar Ejemplo
             </label>
