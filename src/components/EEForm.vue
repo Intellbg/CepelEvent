@@ -46,7 +46,7 @@ async function getData(d1: any, d2: any) {
                 <div class="is-flex">
                     <h3 class="title is-6">Visite los recursos recursos del evento:
                         <a class="tag is-link"
-                            href="https://epnecuador-my.sharepoint.com/:f:/g/personal/roberto_burbano_epn_edu_ec/EktsvS9TzRJLtv6YSLbClbQBSR0l5PzNnYDjvhnZoA0x8A?e=mg2yir">Drive</a>
+                            href="https://1drv.ms/u/s!Alt8ahfU5C8wgY5vCeBtMRbDMSFXTw?e=GKB9m1">Drive</a>
                     </h3>
                 </div>
                 <br>
