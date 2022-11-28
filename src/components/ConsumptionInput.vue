@@ -36,8 +36,8 @@ watch(data, props.info, { deep: true })
             <td>
                 <p>{{ months[index] }}</p>
             </td>
-            <td v-for="(col, colIndex) in row">
-                <div class="control"><input class="input" v-model="data[index][colIndex]" type="number" min="0" step="0.01"
+            <td v-for="(col, colIndex) in row" >
+                <div class="control" v-if="colIndex<3"><input class="input" v-model="data[index][colIndex]" type="number" min="0" step="0.01"
                         required></div>
             </td>
         </tr>
